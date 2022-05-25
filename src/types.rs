@@ -1,5 +1,55 @@
 use std::fmt::Display;
 
+use crate::utils::UniqueIdMaker;
+
+/// An ID to track a particular `Value`
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+pub struct Vid(pub usize);
+
+impl Vid {
+    #[inline]
+    pub fn unique_id_maker() -> UniqueIdMaker<Vid> {
+        UniqueIdMaker::starting_at(1)
+    }
+}
+
+impl From<usize> for Vid {
+    fn from(x: usize) -> Self {
+        Self(x)
+    }
+}
+
+/// A compiler value in the program
+#[derive(Debug, Clone, Copy, Eq, PartialOrd, Ord)]
+pub enum Value {
+    Exact(Vid, i64),
+    Input(Vid, usize), // Represent the `i`th input to the program
+    Unknown(Vid),
+}
+
+impl Value {
+    pub fn vid(&self) -> Vid {
+        match self {
+            Value::Exact(vid, _) | Value::Input(vid, _) | Value::Unknown(vid) => *vid,
+        }
+    }
+}
+
+impl PartialEq for Value {
+    fn eq(&self, other: &Self) -> bool {
+        match (self, other) {
+            (&Self::Exact(_, left), &Self::Exact(_, right)) => {
+                // Check if two known constants are equal
+                left == right
+            }
+            (&left, &right) => {
+                // Check if two inputs or unknowns have the same `Vid`
+                left.vid() == right.vid()
+            }
+        }
+    }
+}
+
 /// A register in a MONAD instruction.
 ///
 /// MONAD supports only 4 variables:
