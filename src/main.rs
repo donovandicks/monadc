@@ -1,6 +1,6 @@
 use std::{env, fs};
 
-use monadc::{compiler::remove_div_by_1, parser::parse_program, types::Instruction};
+use monadc::{compiler::remove_no_op_redundancies, parser::parse_program, types::Instruction};
 
 fn main() {
     let mut args: Vec<String> = env::args().collect();
@@ -20,7 +20,7 @@ fn get_percent_difference(original_len: usize, optimized_len: usize) -> f64 {
 
 fn analyze(program: Vec<Instruction>) {
     let original = program.clone();
-    let optimized = remove_div_by_1(program);
+    let optimized = remove_no_op_redundancies(program);
 
     let original_len = original.len();
     let optimized_len = optimized.len();
