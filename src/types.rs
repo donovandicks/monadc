@@ -6,19 +6,19 @@
 /// - `x`: Register(1)
 /// - `y`: Register(2)
 /// - `z`: Register(3)
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Register(pub usize);
 
 /// The second operand of a MONAD instruction.
 /// Can be a literal number of a register.
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Operand {
     Literal(i64),
     Register(Register),
 }
 
 /// An instruction in the MONAD language.
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Instruction {
     Input(Register),
     Add(Register, Operand),
