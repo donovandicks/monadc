@@ -104,3 +104,20 @@ fn evaluate_instruction(
         Instruction::Equal(..) => evaluate_eql(program, left, right),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_propagate_constants_removes_no_ops() {
+        let instr: Vec<Instruction> = vec![
+            Instruction::Add(Register(0), Operand::Literal(0)),
+            Instruction::Div(Register(0), Operand::Literal(1)),
+            Instruction::Mul(Register(0), Operand::Literal(0)),
+            Instruction::Mod(Register(0), Operand::Literal(1)),
+        ];
+
+        assert_eq!(propagate_constants(instr), vec![],)
+    }
+}

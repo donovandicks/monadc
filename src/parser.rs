@@ -94,8 +94,8 @@ fn instruction(input: &str) -> IResult<&str, Instruction> {
 ///
 /// # Example
 /// ```
-/// inp x
-/// mul x 2
+/// let input = "inp x
+/// mul x 2";
 /// ```
 pub fn parse_program(input: &str) -> Vec<Instruction> {
     let (remainder, program) = many1(instruction)(input).unwrap();
@@ -110,8 +110,24 @@ mod tests {
     #[test]
     fn test_parse_program_valid_input_instr() {
         assert_eq!(
-            parse_program("inp w"),
-            vec![Instruction::Input(Register(0))]
+            parse_program(
+                "inp w
+add x 1
+add y -1
+mul x y
+div y x
+mod z w
+eql w z"
+            ),
+            vec![
+                Instruction::Input(Register(0)),
+                Instruction::Add(Register(1), Operand::Literal(1)),
+                Instruction::Add(Register(2), Operand::Literal(-1)),
+                Instruction::Mul(Register(1), Operand::Register(Register(2))),
+                Instruction::Div(Register(2), Operand::Register(Register(1))),
+                Instruction::Mod(Register(3), Operand::Register(Register(0))),
+                Instruction::Equal(Register(0), Operand::Register(Register(3))),
+            ]
         )
     }
 }
